@@ -1,10 +1,78 @@
+window.showWinnerModal = (function setupWinnerModal() {
+  let initialized = false;
+
+  function closeModal() {
+    const modal = document.getElementById("winner-modal");
+    if (!modal) {
+      return;
+    }
+
+    modal.classList.remove("open");
+    modal.setAttribute("aria-hidden", "true");
+  }
+
+  function initEvents() {
+    if (initialized) {
+      return;
+    }
+
+    const modal = document.getElementById("winner-modal");
+    if (!modal) {
+      return;
+    }
+
+    const closeBtn = document.getElementById("winner-close");
+    const playAgainBtn = document.getElementById("winner-play-again");
+
+    if (closeBtn) {
+      closeBtn.addEventListener("click", closeModal);
+    }
+
+    if (playAgainBtn) {
+      playAgainBtn.addEventListener("click", closeModal);
+    }
+
+    modal.addEventListener("click", (event) => {
+      if (event.target === modal) {
+        closeModal();
+      }
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        closeModal();
+      }
+    });
+
+    initialized = true;
+  }
+
+  return function showWinnerModal(title, message) {
+    const modal = document.getElementById("winner-modal");
+    const titleEl = document.getElementById("winner-title");
+    const messageEl = document.getElementById("winner-message");
+
+    if (!modal || !titleEl || !messageEl) {
+      return;
+    }
+
+    initEvents();
+    titleEl.textContent = title;
+    messageEl.textContent = message;
+    modal.classList.add("open");
+    modal.setAttribute("aria-hidden", "false");
+  };
+})();
+
 window.initCarsMemoryGame = function initCarsMemoryGame() {
   const board = document.getElementById("board");
   const movesEl = document.getElementById("moves");
   const pairsEl = document.getElementById("pairs");
+  const pairsTotalEl = document.getElementById("pairs-total");
+  const characterCountEl = document.getElementById("character-count");
   const restartBtn = document.getElementById("restart");
 
-  if (!board || !movesEl || !pairsEl || !restartBtn) {
+  if (!board || !movesEl || !pairsEl || !pairsTotalEl || !characterCountEl || !restartBtn) {
     return;
   }
 
@@ -28,6 +96,7 @@ window.initCarsMemoryGame = function initCarsMemoryGame() {
   let moves = 0;
   let matchedPairs = 0;
   let lastDeckSignature = "";
+  let activeCharacters = [];
 
   function shuffle(array) {
     for (let i = array.length - 1; i > 0; i -= 1) {
@@ -37,13 +106,13 @@ window.initCarsMemoryGame = function initCarsMemoryGame() {
     return array;
   }
 
-  function buildShuffledDeck() {
+  function buildShuffledDeck(sourceCharacters) {
     let deck = [];
     let signature = "";
     let attempts = 0;
 
     do {
-      deck = shuffle([...characters, ...characters]);
+      deck = shuffle([...sourceCharacters, ...sourceCharacters]);
       signature = deck.map((item) => item.id).join("|");
       attempts += 1;
     } while (signature === lastDeckSignature && attempts < 8);
@@ -55,6 +124,7 @@ window.initCarsMemoryGame = function initCarsMemoryGame() {
   function updateStats() {
     movesEl.textContent = String(moves);
     pairsEl.textContent = String(matchedPairs);
+    pairsTotalEl.textContent = String(activeCharacters.length);
   }
 
   function createCard(character, index) {
@@ -83,9 +153,12 @@ window.initCarsMemoryGame = function initCarsMemoryGame() {
   }
 
   function checkWin() {
-    if (matchedPairs === characters.length) {
+    if (matchedPairs === activeCharacters.length) {
       setTimeout(() => {
-        alert(`Parabens! Encontraste todos os pares em ${moves} tentativas.`);
+        window.showWinnerModal(
+          "Vitoria!",
+          `Parabens! Encontraste ${activeCharacters.length} pares em ${moves} tentativas.`
+        );
       }, 150);
     }
   }
@@ -137,20 +210,44 @@ window.initCarsMemoryGame = function initCarsMemoryGame() {
     }, 900);
   }
 
+  function getSelectedCharacterCount() {
+    const parsed = Number(characterCountEl.value);
+    if (Number.isNaN(parsed)) {
+      return characters.length;
+    }
+    return Math.max(4, Math.min(parsed, characters.length));
+  }
+
+  function buildCharacterPicker() {
+    characterCountEl.innerHTML = "";
+
+    for (let count = 4; count <= characters.length; count += 1) {
+      const option = document.createElement("option");
+      option.value = String(count);
+      option.textContent = `${count} personagens`;
+      characterCountEl.appendChild(option);
+    }
+
+    characterCountEl.value = String(characters.length);
+  }
+
   function initGame() {
     moves = 0;
     matchedPairs = 0;
     openCards = [];
     lock = false;
+    activeCharacters = shuffle([...characters]).slice(0, getSelectedCharacterCount());
     updateStats();
 
-    const deck = buildShuffledDeck();
+    const deck = buildShuffledDeck(activeCharacters);
     const cards = deck.map((character, index) => createCard(character, index));
 
     board.innerHTML = "";
     cards.forEach((card) => board.appendChild(card));
   }
 
+  buildCharacterPicker();
+  characterCountEl.onchange = initGame;
   restartBtn.onclick = initGame;
   initGame();
 };

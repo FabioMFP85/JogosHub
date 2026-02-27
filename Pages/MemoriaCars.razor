@@ -1,14 +1,18 @@
-@page "/memoria-cars"
+﻿@page "/memoria-cars"
 @inject IJSRuntime JS
 
-<h1>Jogo da Memoria - Cars</h1>
+<h1>Jogo da Memoria - Faísca McQueen</h1>
 <p>Encontra todos os pares.</p>
 
 <section class="panel">
     <div class="stats">
         <span>Tentativas: <strong id="moves">0</strong></span>
-        <span>Pares: <strong id="pairs">0</strong>/12</span>
+        <span>Pares: <strong id="pairs">0</strong>/<strong id="pairs-total">0</strong></span>
     </div>
+    <label class="picker" for="character-count">
+        Personagens
+        <select id="character-count" aria-label="Numero de personagens"></select>
+    </label>
     <button id="restart" type="button">Reiniciar</button>
 </section>
 
@@ -23,3 +27,4 @@
         }
     }
 }
+

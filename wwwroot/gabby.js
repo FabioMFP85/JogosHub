@@ -2,9 +2,11 @@ window.initGabbyMemoryGame = function initGabbyMemoryGame() {
   const board = document.getElementById("board");
   const movesEl = document.getElementById("moves");
   const pairsEl = document.getElementById("pairs");
+  const pairsTotalEl = document.getElementById("pairs-total");
+  const characterCountEl = document.getElementById("character-count");
   const restartBtn = document.getElementById("restart");
 
-  if (!board || !movesEl || !pairsEl || !restartBtn) {
+  if (!board || !movesEl || !pairsEl || !pairsTotalEl || !characterCountEl || !restartBtn) {
     return;
   }
 
@@ -29,6 +31,7 @@ window.initGabbyMemoryGame = function initGabbyMemoryGame() {
   let moves = 0;
   let matchedPairs = 0;
   let lastDeckSignature = "";
+  let activeCharacters = [];
 
   function shuffle(array) {
     for (let i = array.length - 1; i > 0; i -= 1) {
@@ -38,13 +41,13 @@ window.initGabbyMemoryGame = function initGabbyMemoryGame() {
     return array;
   }
 
-  function buildShuffledDeck() {
+  function buildShuffledDeck(sourceCharacters) {
     let deck = [];
     let signature = "";
     let attempts = 0;
 
     do {
-      deck = shuffle([...characters, ...characters]);
+      deck = shuffle([...sourceCharacters, ...sourceCharacters]);
       signature = deck.map((item) => item.id).join("|");
       attempts += 1;
     } while (signature === lastDeckSignature && attempts < 8);
@@ -56,6 +59,7 @@ window.initGabbyMemoryGame = function initGabbyMemoryGame() {
   function updateStats() {
     movesEl.textContent = String(moves);
     pairsEl.textContent = String(matchedPairs);
+    pairsTotalEl.textContent = String(activeCharacters.length);
   }
 
   function createCard(character, index) {
@@ -84,9 +88,12 @@ window.initGabbyMemoryGame = function initGabbyMemoryGame() {
   }
 
   function checkWin() {
-    if (matchedPairs === characters.length) {
+    if (matchedPairs === activeCharacters.length) {
       setTimeout(() => {
-        alert(`Parabens! Encontraste todos os pares em ${moves} tentativas.`);
+        window.showWinnerModal(
+          "Vitoria!",
+          `Parabens! Encontraste ${activeCharacters.length} pares em ${moves} tentativas.`
+        );
       }, 150);
     }
   }
@@ -138,20 +145,44 @@ window.initGabbyMemoryGame = function initGabbyMemoryGame() {
     }, 900);
   }
 
+  function getSelectedCharacterCount() {
+    const parsed = Number(characterCountEl.value);
+    if (Number.isNaN(parsed)) {
+      return characters.length;
+    }
+    return Math.max(4, Math.min(parsed, characters.length));
+  }
+
+  function buildCharacterPicker() {
+    characterCountEl.innerHTML = "";
+
+    for (let count = 4; count <= characters.length; count += 1) {
+      const option = document.createElement("option");
+      option.value = String(count);
+      option.textContent = `${count} personagens`;
+      characterCountEl.appendChild(option);
+    }
+
+    characterCountEl.value = String(characters.length);
+  }
+
   function initGame() {
     moves = 0;
     matchedPairs = 0;
     openCards = [];
     lock = false;
+    activeCharacters = shuffle([...characters]).slice(0, getSelectedCharacterCount());
     updateStats();
 
-    const deck = buildShuffledDeck();
+    const deck = buildShuffledDeck(activeCharacters);
     const cards = deck.map((character, index) => createCard(character, index));
 
     board.innerHTML = "";
     cards.forEach((card) => board.appendChild(card));
   }
 
+  buildCharacterPicker();
+  characterCountEl.onchange = initGame;
   restartBtn.onclick = initGame;
   initGame();
 };

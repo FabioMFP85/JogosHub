@@ -64,6 +64,7 @@ window.initGaloGame = function initGaloGame() {
       isGameOver = true;
       updateInfo(`Vitoria do jogador ${winner}`);
       renderBoard();
+      window.showWinnerModal("Temos vencedor!", `Vitoria do jogador ${winner}.`);
       return;
     }
 
@@ -71,6 +72,7 @@ window.initGaloGame = function initGaloGame() {
       isGameOver = true;
       updateInfo("Empate");
       renderBoard();
+      window.showWinnerModal("Empate", "Ninguem venceu desta vez. Clica em novo jogo.");
       return;
     }
 
