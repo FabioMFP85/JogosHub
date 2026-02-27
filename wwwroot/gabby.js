@@ -11,14 +11,14 @@ window.initGabbyMemoryGame = function initGabbyMemoryGame() {
   board.classList.add("gabby-board");
 
   const characters = [
-    { id: "gabby", name: "Gabby", image: "/images/gabby/gabby.png" },
-    { id: "pandy", name: "Pandy Patas", image: "/images/gabby/pandy.png" },
-    { id: "djcatnip", name: "DJ Catnip", image: "/images/gabby/djcatnip.png" },
-    { id: "cakey", name: "Cakey Cat", image: "/images/gabby/cakey.png" },
-    { id: "kittyfairy", name: "Kitty Fairy", image: "/images/gabby/kittyfairy.png" },
-    { id: "mercat", name: "MerCat", image: "/images/gabby/mercat.png" },
-    { id: "pillowcat", name: "Pillow Cat", image: "/images/gabby/pillowcat.png" },
-    { id: "catrat", name: "CatRat", image: "/images/gabby/catrat.png" }
+    { id: "gabby", name: "Gabby", image: "images/gabby/gabby.png" },
+    { id: "pandy", name: "Pandy Patas", image: "images/gabby/pandy.png" },
+    { id: "djcatnip", name: "DJ Catnip", image: "images/gabby/djcatnip.png" },
+    { id: "cakey", name: "Cakey Cat", image: "images/gabby/cakey.png" },
+    { id: "kittyfairy", name: "Kitty Fairy", image: "images/gabby/kittyfairy.png" },
+    { id: "mercat", name: "MerCat", image: "images/gabby/mercat.png" },
+    { id: "pillowcat", name: "Pillow Cat", image: "images/gabby/pillowcat.png" },
+    { id: "catrat", name: "CatRat", image: "images/gabby/catrat.png" }
   ];
 
   let openCards = [];

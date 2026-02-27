@@ -9,14 +9,14 @@ window.initCarsMemoryGame = function initCarsMemoryGame() {
   }
 
   const characters = [
-    { id: "mcqueen", name: "Relampago McQueen", image: "/images/cars/mcqueen.svg" },
-    { id: "mate", name: "Mate", image: "/images/cars/mate.svg" },
-    { id: "sally", name: "Sally", image: "/images/cars/sally.svg" },
-    { id: "doc", name: "Doc Hudson", image: "/images/cars/doc.svg" },
-    { id: "luigi", name: "Luigi", image: "/images/cars/luigi.svg" },
-    { id: "guido", name: "Guido", image: "/images/cars/guido.svg" },
-    { id: "ramone", name: "Ramone", image: "/images/cars/ramone.svg" },
-    { id: "flo", name: "Flo", image: "/images/cars/flo.svg" }
+    { id: "mcqueen", name: "Relampago McQueen", image: "images/cars/mcqueen.svg" },
+    { id: "mate", name: "Mate", image: "images/cars/mate.svg" },
+    { id: "sally", name: "Sally", image: "images/cars/sally.svg" },
+    { id: "doc", name: "Doc Hudson", image: "images/cars/doc.svg" },
+    { id: "luigi", name: "Luigi", image: "images/cars/luigi.svg" },
+    { id: "guido", name: "Guido", image: "images/cars/guido.svg" },
+    { id: "ramone", name: "Ramone", image: "images/cars/ramone.svg" },
+    { id: "flo", name: "Flo", image: "images/cars/flo.svg" }
   ];
 
   let openCards = [];
