@@ -1,0 +1,51 @@
+@page "/puzzle-paw-patrol"
+@inject IJSRuntime JS
+
+<h1>Puzzle Paw Patrol</h1>
+<p>Organiza as pecas para formar a imagem.</p>
+
+<section class="panel">
+    <div class="stats">
+        <span>Movimentos: <strong id="puzzle-moves">0</strong></span>
+    </div>
+    <label class="picker" for="puzzle-size">
+        Nivel
+        <select id="puzzle-size" aria-label="Nivel do puzzle">
+            <option value="2">Facil (2x2)</option>
+            <option value="3">Normal (3x3)</option>
+        </select>
+    </label>
+    <button id="puzzle-restart" type="button">Reiniciar</button>
+</section>
+
+<div class="puzzle-wrap">
+    <aside class="puzzle-reference" aria-label="Imagem de referencia do puzzle">
+        <button id="puzzle-reference-open" type="button" class="puzzle-reference-button" aria-label="Abrir imagem original em tamanho normal">
+            <span>Imagem original</span>
+            <img src="images/pawpatrol/patrulla-canina.jpg" alt="Imagem original Paw Patrol" />
+        </button>
+    </aside>
+
+    <section id="puzzle-board" class="puzzle-board" aria-label="Puzzle Paw Patrol"></section>
+    <section class="puzzle-tray-wrap">
+        <h2>Pecas</h2>
+        <section id="puzzle-tray" class="puzzle-tray" aria-label="Pecas embaralhadas"></section>
+    </section>
+</div>
+
+<div id="puzzle-image-modal" class="puzzle-image-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Imagem final ampliada">
+    <div class="puzzle-image-modal-card">
+        <button id="puzzle-image-close" type="button" class="ghost-button">Fechar</button>
+        <img src="images/pawpatrol/patrulla-canina.jpg" alt="Paw Patrol ampliada" />
+    </div>
+</div>
+
+@code {
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JS.InvokeVoidAsync("initPawPatrolPuzzle");
+        }
+    }
+}
