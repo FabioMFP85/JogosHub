@@ -761,6 +761,46 @@ button:hover {
   }
 }
 
+@media (min-width: 768px) and (max-width: 1366px) {
+  .puzzle-wrap {
+    grid-template-columns: minmax(0, 1fr) 220px;
+    grid-template-areas:
+      "board reference"
+      "board tray";
+    align-items: start;
+  }
+
+  .puzzle-board {
+    grid-area: board;
+    width: 100%;
+    max-width: none;
+    margin: 0;
+  }
+
+  .puzzle-reference {
+    grid-area: reference;
+    width: 100%;
+    max-width: 220px;
+    justify-self: stretch;
+  }
+
+  .puzzle-tray-wrap {
+    grid-area: tray;
+    width: 100%;
+    margin: 0;
+    max-height: 52dvh;
+    overflow: auto;
+  }
+
+  .puzzle-tray {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px;
+    overflow: visible;
+    padding-bottom: 0;
+  }
+}
+
 @media (max-width: 699px) and (orientation: landscape) {
   .puzzle-wrap {
     grid-template-columns: minmax(0, 1fr) 170px;
