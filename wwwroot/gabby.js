@@ -12,9 +12,12 @@ window.initGabbyMemoryGame = function initGabbyMemoryGame() {
 
   const characters = [
     { id: "gabby", name: "Gabby", image: "images/gabby/gabby.png" },
+    { id: "babybox", name: "Baby Box", image: "images/gabby/babybox.png" },
     { id: "pandy", name: "Pandy Patas", image: "images/gabby/pandy.png" },
     { id: "djcatnip", name: "DJ Catnip", image: "images/gabby/djcatnip.png" },
     { id: "cakey", name: "Cakey Cat", image: "images/gabby/cakey.png" },
+    { id: "marty-party-cat", name: "Marty The Party Cat", image: "images/gabby/marty-the-party-cat.png" },
+    { id: "carlita", name: "Carlita", image: "images/gabby/carlita.png" },
     { id: "kittyfairy", name: "Kitty Fairy", image: "images/gabby/kittyfairy.png" },
     { id: "mercat", name: "MerCat", image: "images/gabby/mercat.png" },
     { id: "pillowcat", name: "Pillow Cat", image: "images/gabby/pillowcat.png" },
