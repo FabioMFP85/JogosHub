@@ -43,6 +43,11 @@ window.initGaloGame = function initGaloGame() {
     gameState.forEach((value, index) => {
       const cell = document.createElement("button");
       cell.className = "galo-cell";
+      if (value === "X") {
+        cell.classList.add("x");
+      } else if (value === "O") {
+        cell.classList.add("o");
+      }
       cell.type = "button";
       cell.textContent = value;
       cell.disabled = Boolean(value) || isGameOver;

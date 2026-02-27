@@ -1,0 +1,83 @@
+@page "/jogo-da-estatua"
+@inject IJSRuntime JS
+
+<h1>Jogo da Estatua</h1>
+<p>Danca quando a musica toca. Quando parar, fica estatua.</p>
+
+<section class="panel statue-actions">
+    <div class="stats">
+        <span>Ronda: <strong id="statue-round">0</strong></span>
+        <span>Estado: <strong id="statue-state">Pronto</strong></span>
+    </div>
+    <button id="statue-start" type="button">
+        <svg class="btn-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" /></svg>
+        Comecar
+    </button>
+    <button id="statue-stop" type="button" class="ghost-button">
+        <svg class="btn-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="6" width="12" height="12" /></svg>
+        Parar
+    </button>
+</section>
+
+<section class="panel statue-actions">
+    <label class="picker" for="statue-video-query">
+        Video YouTube
+        <input id="statue-video-query" type="text" placeholder="Escreva para pesquisar na lista ou cole link/ID" />
+    </label>
+    <button id="statue-apply-video" type="button">Aplicar video</button>
+    <button id="statue-add-video" type="button">Adicionar musica</button>
+    <button id="statue-mic-toggle" type="button" class="ghost-button">
+        <svg class="btn-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15a4 4 0 0 0 4-4V7a4 4 0 1 0-8 0v4a4 4 0 0 0 4 4zm-7-4a1 1 0 1 1 2 0 5 5 0 0 0 10 0 1 1 0 1 1 2 0 7 7 0 0 1-6 6.93V21h2a1 1 0 1 1 0 2H9a1 1 0 1 1 0-2h2v-3.07A7 7 0 0 1 5 11z" /></svg>
+        <span id="statue-mic-label">Ativar microfone</span>
+    </button>
+    <button id="statue-ptt" type="button">
+        <svg class="btn-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 14a3 3 0 0 0 3-3V7a3 3 0 1 0-6 0v4a3 3 0 0 0 3 3zm-5-3a1 1 0 1 1 2 0 3 3 0 1 0 6 0 1 1 0 1 1 2 0 5 5 0 0 1-4 4.9V19h1a1 1 0 1 1 0 2h-4a1 1 0 1 1 0-2h1v-3.1A5 5 0 0 1 7 11z" /></svg>
+        <span id="statue-ptt-label">Premir para falar</span>
+    </button>
+</section>
+
+<section class="statue-layout">
+    <section class="statue-player-card">
+        <div id="statue-player" class="statue-player" aria-label="Player de musica YouTube"></div>
+    </section>
+
+    <section class="statue-status-card">
+        <h2 id="statue-phase" class="statue-phase idle">Aguarda</h2>
+        <p id="statue-message">Clica em comecar para iniciar o jogo.</p>
+        <div id="statue-search-results" class="statue-results" aria-label="Resultados de pesquisa local"></div>
+    </section>
+</section>
+
+<div id="statue-add-modal" class="statue-add-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Adicionar musica">
+    <div class="statue-add-card">
+        <h2>Adicionar musica</h2>
+        <label class="picker" for="statue-add-search">
+            Pesquisar no YouTube
+            <input id="statue-add-search" type="text" placeholder="Ex: Tucantar festa" />
+        </label>
+        <button id="statue-add-search-btn" type="button" class="ghost-button">Pesquisar</button>
+        <div id="statue-add-search-results" class="statue-add-search-results" aria-label="Resultados da pesquisa YouTube"></div>
+        <label class="picker" for="statue-add-url">
+            Link ou ID
+            <input id="statue-add-url" type="text" placeholder="Cole o link/ID do YouTube" />
+        </label>
+        <label class="picker" for="statue-add-title">
+            Nome (opcional)
+            <input id="statue-add-title" type="text" placeholder="Ex: Tucantar - Musica nova" />
+        </label>
+        <div class="panel">
+            <button id="statue-add-confirm" type="button">Guardar</button>
+            <button id="statue-add-cancel" type="button" class="ghost-button">Cancelar</button>
+        </div>
+    </div>
+</div>
+
+@code {
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JS.InvokeVoidAsync("initStatueGame");
+        }
+    }
+}
