@@ -1,0 +1,25 @@
+@page "/jogo-do-galo"
+@inject IJSRuntime JS
+
+<h1>Jogo do Galo</h1>
+<p>Modo local para 2 jogadores.</p>
+
+<section class="panel galo-panel">
+    <div class="stats">
+        <span>Vez de: <strong id="current-player">X</strong></span>
+        <span id="galo-status">Jogo em curso</span>
+    </div>
+    <button id="galo-restart" type="button">Novo jogo</button>
+</section>
+
+<section id="galo-board" class="galo-board" aria-label="Tabuleiro do jogo do galo"></section>
+
+@code {
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JS.InvokeVoidAsync("initGaloGame");
+        }
+    }
+}

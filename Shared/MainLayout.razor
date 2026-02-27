@@ -1,0 +1,17 @@
+@inherits LayoutComponentBase
+
+<div class="layout">
+    <aside class="sidebar">
+        <h2>Jogos</h2>
+        <nav class="side-nav" aria-label="Navegacao de jogos">
+            <NavLink href="/" Match="NavLinkMatch.All" class="side-link">Menu</NavLink>
+            <NavLink href="/memoria-cars" class="side-link">Memoria Cars</NavLink>
+            <NavLink href="/memoria-gabby" class="side-link">Memoria Gabby</NavLink>
+            <NavLink href="/jogo-do-galo" class="side-link">Jogo do Galo</NavLink>
+        </nav>
+    </aside>
+
+    <main class="container">
+        @Body
+    </main>
+</div>

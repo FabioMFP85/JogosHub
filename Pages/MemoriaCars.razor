@@ -1,0 +1,25 @@
+@page "/memoria-cars"
+@inject IJSRuntime JS
+
+<h1>Jogo da Memoria - Cars</h1>
+<p>Encontra todos os pares.</p>
+
+<section class="panel">
+    <div class="stats">
+        <span>Tentativas: <strong id="moves">0</strong></span>
+        <span>Pares: <strong id="pairs">0</strong>/8</span>
+    </div>
+    <button id="restart" type="button">Reiniciar</button>
+</section>
+
+<section id="board" class="board" aria-label="Tabuleiro do jogo da memoria Cars"></section>
+
+@code {
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JS.InvokeVoidAsync("initCarsMemoryGame");
+        }
+    }
+}
