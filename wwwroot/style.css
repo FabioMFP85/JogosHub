@@ -256,6 +256,36 @@ button:hover {
   opacity: 0.85;
 }
 
+@media (min-width: 901px) {
+  button {
+    padding: 10px 16px;
+    font-size: 1rem;
+  }
+
+  .side-link {
+    padding: 10px 12px;
+    font-size: 1rem;
+  }
+
+  .menu-card {
+    padding: 14px;
+  }
+
+  .board {
+    grid-template-columns: repeat(4, minmax(86px, 120px));
+    gap: 12px;
+  }
+
+  .gabby-board {
+    grid-template-columns: repeat(4, minmax(92px, 126px));
+  }
+
+  .galo-board {
+    grid-template-columns: repeat(3, minmax(96px, 124px));
+    gap: 12px;
+  }
+}
+
 @media (max-width: 900px) {
   .layout {
     grid-template-columns: 1fr;
