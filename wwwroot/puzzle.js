@@ -209,8 +209,8 @@ function initImagePuzzle(config) {
     tray.innerHTML = "";
     board.classList.remove("completed");
     tray.classList.remove("hidden");
-    board.style.gridTemplateColumns = `repeat(${size}, 1fr)`;
-    tray.style.gridTemplateColumns = `repeat(${size}, 1fr)`;
+    board.dataset.size = String(size);
+    tray.dataset.size = String(size);
 
     for (let i = 0; i < totalPieces; i += 1) {
       board.appendChild(buildSlot(i));
