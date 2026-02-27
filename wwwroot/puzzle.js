@@ -1,4 +1,4 @@
-window.initPawPatrolPuzzle = function initPawPatrolPuzzle() {
+function initImagePuzzle(config) {
   const board = document.getElementById("puzzle-board");
   const tray = document.getElementById("puzzle-tray");
   const movesEl = document.getElementById("puzzle-moves");
@@ -12,12 +12,22 @@ window.initPawPatrolPuzzle = function initPawPatrolPuzzle() {
     return;
   }
 
-  const imagePath = "images/pawpatrol/patrulla-canina.jpg";
+  const imagePath = config.imagePath;
+  const modalImage = imageModal.querySelector("img");
+  const referenceImage = referenceOpenBtn.querySelector("img");
+  if (modalImage) {
+    modalImage.src = imagePath;
+  }
+  if (referenceImage) {
+    referenceImage.src = imagePath;
+  }
+
   let size = 2;
   let moves = 0;
   let placedCount = 0;
   let totalPieces = size * size;
   let draggingPieceId = "";
+  let selectedPieceId = "";
   let completed = false;
 
   function updateMoves() {
@@ -53,6 +63,15 @@ window.initPawPatrolPuzzle = function initPawPatrolPuzzle() {
     board.appendChild(finalButton);
   }
 
+  function setSelectedPiece(pieceId) {
+    selectedPieceId = pieceId;
+
+    const pieces = tray.querySelectorAll(".puzzle-piece");
+    pieces.forEach((piece) => {
+      piece.classList.toggle("selected", piece.dataset.pieceId === selectedPieceId);
+    });
+  }
+
   function buildPiece(pieceId) {
     const piece = document.createElement("button");
     piece.type = "button";
@@ -76,6 +95,14 @@ window.initPawPatrolPuzzle = function initPawPatrolPuzzle() {
 
     piece.addEventListener("dragend", () => {
       piece.classList.remove("dragging");
+    });
+
+    piece.addEventListener("click", () => {
+      if (completed || piece.classList.contains("locked")) {
+        return;
+      }
+
+      setSelectedPiece(selectedPieceId === String(pieceId) ? "" : String(pieceId));
     });
 
     return piece;
@@ -105,6 +132,13 @@ window.initPawPatrolPuzzle = function initPawPatrolPuzzle() {
       }
 
       handleDrop(slot, pieceId);
+    });
+
+    slot.addEventListener("click", () => {
+      if (!selectedPieceId) {
+        return;
+      }
+      handleDrop(slot, selectedPieceId);
     });
 
     return slot;
@@ -140,6 +174,7 @@ window.initPawPatrolPuzzle = function initPawPatrolPuzzle() {
     piece.classList.add("locked");
     piece.draggable = false;
     slot.appendChild(piece);
+    setSelectedPiece("");
     placedCount += 1;
 
     if (placedCount === totalPieces) {
@@ -165,6 +200,7 @@ window.initPawPatrolPuzzle = function initPawPatrolPuzzle() {
     moves = 0;
     placedCount = 0;
     draggingPieceId = "";
+    selectedPieceId = "";
     completed = false;
     updateMoves();
     closeImageModal();
@@ -199,4 +235,16 @@ window.initPawPatrolPuzzle = function initPawPatrolPuzzle() {
     }
   });
   reset();
+}
+
+window.initPawPatrolPuzzle = function initPawPatrolPuzzle() {
+  initImagePuzzle({
+    imagePath: "images/pawpatrol/patrulla-canina.jpg"
+  });
+};
+
+window.initGabbyPuzzle = function initGabbyPuzzle() {
+  initImagePuzzle({
+    imagePath: "images/gabby/gabbypuzzle.jpg"
+  });
 };
