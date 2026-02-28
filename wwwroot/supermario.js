@@ -669,28 +669,11 @@ window.initSuperMarioGame = (function setupSuperMarioGame() {
   }
 
   function resizeCanvas() {
-    const ratio = 16 / 9;
-    const isMobileViewport = window.innerWidth <= 900;
-    const parentWidth = canvas.parentElement ? canvas.parentElement.clientWidth : window.innerWidth;
-    const horizontalPadding = isMobileViewport ? 20 : 32;
-    const maxDesktopWidth = 760;
-    const rawWidth = isMobileViewport
-      ? window.innerWidth - horizontalPadding
-      : Math.min(parentWidth || window.innerWidth - horizontalPadding, maxDesktopWidth);
-    const availableWidth = Math.max(260, rawWidth);
-    const reservedHeight = isMobileViewport ? 250 : 220;
-    const availableHeight = Math.max(160, window.innerHeight - reservedHeight);
-    let targetWidth = availableWidth;
-    let targetHeight = Math.round(targetWidth / ratio);
-
-    // Keep the stage in a stable 16:9 rectangle that fits on small mobile viewports.
-    if (targetHeight > availableHeight) {
-      targetHeight = availableHeight;
-      targetWidth = Math.round(targetHeight * ratio);
-    }
-
-    canvas.width = targetWidth;
-    canvas.height = targetHeight;
+    // We keep a constant internal resolution of 960x420.
+    // The game logic and coordinate system are built around these dimensions.
+    // CSS handles the visual scaling to fit different screen sizes.
+    canvas.width = 960;
+    canvas.height = 420;
   }
 
   window.stopSuperMarioGame = function stopSuperMarioGame() {
