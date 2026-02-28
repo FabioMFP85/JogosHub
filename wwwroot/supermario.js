@@ -502,9 +502,7 @@ window.initSuperMarioGame = (function setupSuperMarioGame() {
       const x = enemy.x - state.cameraX;
       const y = enemy.y;
       ctx.fillStyle = "#7f4a22";
-      ctx.beginPath();
-      ctx.roundRect(x, y, enemy.w, enemy.h, 9);
-      ctx.fill();
+      ctx.fillRect(x, y, enemy.w, enemy.h);
 
       ctx.fillStyle = "#f7e6d8";
       ctx.fillRect(x + 4, y + enemy.h - 9, enemy.w - 8, 7);
@@ -543,9 +541,7 @@ window.initSuperMarioGame = (function setupSuperMarioGame() {
     const runSwing = Math.sin(performance.now() * 0.02 + p.x * 0.03) * Math.min(1, Math.abs(p.vx) / PHYSICS.maxRunSpeed);
 
     ctx.fillStyle = "#e62f2f";
-    ctx.beginPath();
-    ctx.roundRect(x + 4, y, p.w - 8, 13, 4);
-    ctx.fill();
+    ctx.fillRect(x + 4, y, p.w - 8, 13);
 
     ctx.fillStyle = "#f4c39d";
     ctx.fillRect(x + 8, y + 8, p.w - 16, 9);
@@ -673,11 +669,28 @@ window.initSuperMarioGame = (function setupSuperMarioGame() {
   }
 
   function resizeCanvas() {
-    const cssWidth = canvas.clientWidth || 960;
     const ratio = 16 / 9;
-    const targetWidth = Math.max(320, Math.min(1100, cssWidth));
+    const isMobileViewport = window.innerWidth <= 900;
+    const parentWidth = canvas.parentElement ? canvas.parentElement.clientWidth : window.innerWidth;
+    const horizontalPadding = isMobileViewport ? 20 : 32;
+    const maxDesktopWidth = 760;
+    const rawWidth = isMobileViewport
+      ? window.innerWidth - horizontalPadding
+      : Math.min(parentWidth || window.innerWidth - horizontalPadding, maxDesktopWidth);
+    const availableWidth = Math.max(260, rawWidth);
+    const reservedHeight = isMobileViewport ? 250 : 220;
+    const availableHeight = Math.max(160, window.innerHeight - reservedHeight);
+    let targetWidth = availableWidth;
+    let targetHeight = Math.round(targetWidth / ratio);
+
+    // Keep the stage in a stable 16:9 rectangle that fits on small mobile viewports.
+    if (targetHeight > availableHeight) {
+      targetHeight = availableHeight;
+      targetWidth = Math.round(targetHeight * ratio);
+    }
+
     canvas.width = targetWidth;
-    canvas.height = Math.round(targetWidth / ratio);
+    canvas.height = targetHeight;
   }
 
   window.stopSuperMarioGame = function stopSuperMarioGame() {
@@ -718,22 +731,11 @@ window.initSuperMarioGame = (function setupSuperMarioGame() {
     if (!ctx) {
       return;
     }
-    if (!ctx.roundRect) {
-      ctx.roundRect = function roundRect(x, y, w, h, r) {
-        this.beginPath();
-        this.moveTo(x + r, y);
-        this.arcTo(x + w, y, x + w, y + h, r);
-        this.arcTo(x + w, y + h, x, y + h, r);
-        this.arcTo(x, y + h, x, y, r);
-        this.arcTo(x, y, x + w, y, r);
-        this.closePath();
-      };
-    }
 
     resizeCanvas();
     resetWorld();
-    setStatus("Pronto");
-    state.running = false;
+    setStatus("A jogar");
+    state.running = true;
 
     startBtn.onclick = () => {
       if (state.lives <= 0) {
