@@ -22,6 +22,7 @@ window.initGaloGame = function initGaloGame() {
   let gameState = Array(9).fill("");
   let currentPlayer = "X";
   let isGameOver = false;
+  let winningLine = [];
 
   function updateInfo(message = "Jogo em curso") {
     currentPlayerEl.textContent = currentPlayer;
@@ -29,12 +30,13 @@ window.initGaloGame = function initGaloGame() {
   }
 
   function checkWinner() {
-    for (const [a, b, c] of winningLines) {
+    for (const line of winningLines) {
+      const [a, b, c] = line;
       if (gameState[a] && gameState[a] === gameState[b] && gameState[b] === gameState[c]) {
-        return gameState[a];
+        return { winner: gameState[a], line };
       }
     }
-    return "";
+    return null;
   }
 
   function renderBoard() {
@@ -48,6 +50,11 @@ window.initGaloGame = function initGaloGame() {
       } else if (value === "O") {
         cell.classList.add("o");
       }
+      
+      if (winningLine.includes(index)) {
+        cell.classList.add("winner");
+      }
+
       cell.type = "button";
       cell.textContent = value;
       cell.disabled = Boolean(value) || isGameOver;
@@ -64,12 +71,13 @@ window.initGaloGame = function initGaloGame() {
 
     gameState[index] = currentPlayer;
 
-    const winner = checkWinner();
-    if (winner) {
+    const result = checkWinner();
+    if (result) {
       isGameOver = true;
-      updateInfo(`Vitoria do jogador ${winner}`);
+      winningLine = result.line;
+      updateInfo(`Vitoria do jogador ${result.winner}`);
       renderBoard();
-      window.showWinnerModal("Temos vencedor!", `Vitoria do jogador ${winner}.`);
+      window.showWinnerModal("Temos vencedor!", `Vitoria do jogador ${result.winner}.`);
       return;
     }
 
@@ -90,6 +98,7 @@ window.initGaloGame = function initGaloGame() {
     gameState = Array(9).fill("");
     currentPlayer = "X";
     isGameOver = false;
+    winningLine = [];
     updateInfo();
     renderBoard();
   }

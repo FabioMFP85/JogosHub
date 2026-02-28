@@ -2,58 +2,88 @@
 @inject IJSRuntime JS
 @implements IAsyncDisposable
 
-<h1>Moldura de Foto</h1>
-<p>Permite a camera e posiciona a imagem dentro da moldura.</p>
+<h1>Fotografias</h1>
+<p>Escolhe uma moldura e tira uma foto divertida!</p>
 
-<section class="panel">
-    <div class="stats">
-        <span>Estado: <strong id="photo-status">A iniciar camera...</strong></span>
-    </div>
-    <button id="photo-start" type="button">Ligar camera</button>
-    <button id="photo-switch" type="button" class="ghost-button">Trocar camera</button>
-    <button id="photo-capture" type="button">Disparar foto</button>
-    <button id="photo-stop" type="button" class="ghost-button">Parar camera</button>
-</section>
-
-<section class="photo-layout">
-    <aside class="photo-frame-list" aria-label="Lista de molduras">
-        <h2>Molduras</h2>
-        <button class="photo-frame-option selected" type="button" data-frame-src="images/molduras/gabby.png" data-frame-name="Gabby">
-            <img src="images/molduras/gabby.png" alt="Moldura Gabby" />
-            <span>Gabby</span>
-        </button>
-        <button class="photo-frame-option" type="button" data-frame-src="images/molduras/mcqueen.png" data-frame-name="McQueen">
-            <img src="images/molduras/mcqueen.png" alt="Moldura McQueen" />
-            <span>McQueen</span>
-        </button>
-        <button class="photo-frame-option" type="button" data-frame-src="images/molduras/frozen.png" data-frame-name="Frozen">
-            <img src="images/molduras/frozen.png" alt="Moldura Frozen" />
-            <span>Frozen</span>
-        </button>
-        <button class="photo-frame-option" type="button" data-frame-src="images/molduras/moana.png" data-frame-name="Moana">
-            <img src="images/molduras/moana.png" alt="Moldura Moana" />
-            <span>Moana</span>
-        </button>
-    </aside>
-
-    <section class="photo-frame-stage" aria-label="Visualizacao da camera com moldura">
-        <div class="photo-frame-window">
-            <video id="photo-frame-video" autoplay playsinline muted></video>
+<section class="photo-container">
+    <div class="photo-main-card">
+        <div class="photo-controls-top">
+            <div class="photo-status-badge">
+                <span id="photo-status">A iniciar camera...</span>
+            </div>
+            <div class="photo-actions">
+                <button id="photo-start" type="button" class="icon-btn primary" title="Ligar camera" aria-label="Ligar camera">
+                    <svg viewBox="0 0 24 24"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4zM14 13h-3v3H9v-3H6v-2h3V8h2v3h3v2z"/></svg>
+                </button>
+                <button id="photo-switch" type="button" class="icon-btn" title="Trocar camera" aria-label="Trocar camera">
+                    <svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"/><path d="M0 0h24v24H0z" fill="none"/></svg>
+                </button>
+                <button id="photo-stop" type="button" class="icon-btn danger" title="Parar camera" aria-label="Parar camera">
+                    <svg viewBox="0 0 24 24"><path d="M6 6h12v12H6z"/></svg>
+                </button>
+            </div>
         </div>
-        <img id="photo-frame-overlay" class="photo-frame-overlay" src="images/molduras/gabby.png" alt="Moldura selecionada" />
-    </section>
+
+        <div class="photo-frame-viewport">
+            <div class="photo-video-wrap">
+                <video id="photo-frame-video" autoplay playsinline muted></video>
+                <img id="photo-frame-overlay" class="photo-frame-overlay" src="" alt="Moldura" style="display: none;" />
+                <div id="photo-countdown" class="photo-countdown-overlay"></div>
+            </div>
+            
+            <button id="photo-capture" class="photo-capture-trigger" type="button" title="Tirar foto" aria-label="Tirar foto">
+                <div class="capture-inner"></div>
+            </button>
+        </div>
+
+        <div class="photo-frames-selector">
+            <h3>Escolher Moldura</h3>
+            <div class="photo-frames-grid">
+                <button class="photo-frame-option no-frame selected" type="button" data-frame-src="" data-frame-name="Sem Moldura">
+                    <div class="no-frame-icon">/</div>
+                    <span>Nenhuma</span>
+                </button>
+                <button class="photo-frame-option" type="button" data-frame-src="images/molduras/gabby.png" data-frame-name="Gabby">
+                    <img src="images/molduras/gabby.png" alt="Gabby" />
+                    <span>Gabby</span>
+                </button>
+                <button class="photo-frame-option" type="button" data-frame-src="images/molduras/mcqueen.png" data-frame-name="McQueen">
+                    <img src="images/molduras/mcqueen.png" alt="McQueen" />
+                    <span>McQueen</span>
+                </button>
+                <button class="photo-frame-option" type="button" data-frame-src="images/molduras/frozen.png" data-frame-name="Frozen">
+                    <img src="images/molduras/frozen.png" alt="Frozen" />
+                    <span>Frozen</span>
+                </button>
+                <button class="photo-frame-option" type="button" data-frame-src="images/molduras/moana.png" data-frame-name="Moana">
+                    <img src="images/molduras/moana.png" alt="Moana" />
+                    <span>Moana</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <aside class="photo-result-sidebar">
+        <div class="result-header">
+            <h2>Última Foto</h2>
+            <a id="photo-download" class="download-btn disabled" href="#" download="minha-foto.png" title="Descarregar">
+                <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+            </a>
+        </div>
+        <div class="result-preview">
+            <img id="photo-result-image" alt="Resultado" />
+            <div class="empty-result">
+                <svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
+                <p>Tira uma foto para veres o resultado!</p>
+            </div>
+        </div>
+    </aside>
 </section>
 
 <canvas id="photo-canvas" class="photo-canvas" aria-hidden="true"></canvas>
 
-<section class="photo-result" aria-label="Foto capturada">
-    <h2>Ultima foto</h2>
-    <img id="photo-result-image" alt="Foto capturada na moldura" />
-    <a id="photo-download" class="photo-download" href="#" download="moldura-foto.png">Descarregar foto</a>
-</section>
-
 <button id="photo-capture-mobile" class="photo-capture-mobile" type="button" aria-label="Tirar foto">
-    Tirar foto
+    <div class="capture-inner"></div>
 </button>
 
 @code {
