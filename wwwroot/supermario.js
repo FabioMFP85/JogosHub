@@ -19,7 +19,8 @@ window.initSuperMarioGame = (function setupSuperMarioGame() {
     clouds: [],
     hills: [],
     bushes: [],
-    lastTs: 0
+    lastTs: 0,
+    playerImg: null
   };
 
   const PHYSICS = {
@@ -713,6 +714,12 @@ window.initSuperMarioGame = (function setupSuperMarioGame() {
     ctx = canvas.getContext("2d");
     if (!ctx) {
       return;
+    }
+
+    // Carregar a imagem do jogador
+    if (!state.playerImg) {
+      state.playerImg = new Image();
+      state.playerImg.src = "images/supermario/supermario.png";
     }
 
     resizeCanvas();
