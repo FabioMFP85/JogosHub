@@ -44,6 +44,8 @@ window.initStatueGame = function initStatueGame() {
   let pttRecognition = null;
   let micActive = false;
   let lastVoiceCommandAt = 0;
+  let lastCommandKey = "";
+  const isMobileDevice = window.matchMedia("(pointer: coarse)").matches || /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
   let player = null;
   let running = false;
@@ -213,16 +215,17 @@ window.initStatueGame = function initStatueGame() {
     );
   }
 
-  function processVoiceTranscript(transcript) {
+  function processVoiceTranscript(transcript, mode = "continuous") {
     const normalized = normalizeSpeech(transcript);
     const compact = collapseSpeech(transcript);
+    const cooldownMs = mode === "ptt" ? 350 : 550;
 
-    if (isContinueCommand(normalized) && canRunVoiceCommand()) {
+    if (isContinueCommand(normalized) && canRunVoiceCommand("continue", cooldownMs)) {
       continueByVoice();
       setPhase("dance", "Danca!", `Comando voz: "${normalized}"`);
       return true;
     }
-    if ((isPauseCommand(normalized) || compact.includes("estatu")) && canRunVoiceCommand()) {
+    if ((isPauseCommand(normalized) || compact.includes("estatu")) && canRunVoiceCommand("pause", cooldownMs)) {
       pauseByVoice();
       setPhase("freeze", "Estatua!", `Comando voz: "${normalized}"`);
       return true;
@@ -230,9 +233,14 @@ window.initStatueGame = function initStatueGame() {
     return false;
   }
 
-  function canRunVoiceCommand() {
+  function canRunVoiceCommand(key, cooldownMs = 320) {
     const now = Date.now();
-    if (now - lastVoiceCommandAt < 320) {
+    if (lastCommandKey !== key) {
+      lastCommandKey = key;
+      lastVoiceCommandAt = now;
+      return true;
+    }
+    if (now - lastVoiceCommandAt < cooldownMs) {
       return false;
     }
     lastVoiceCommandAt = now;
@@ -241,6 +249,7 @@ window.initStatueGame = function initStatueGame() {
 
   function stopGame() {
     running = false;
+    lastCommandKey = "";
     pauseVideoOnly();
     setPhase("idle", "Parado", "Jogo parado. Clica em comecar para jogar novamente.");
   }
@@ -252,6 +261,7 @@ window.initStatueGame = function initStatueGame() {
     }
 
     running = true;
+    lastCommandKey = "";
     round += 1;
     roundEl.textContent = String(round);
     const song = randomSong();
@@ -499,11 +509,20 @@ window.initStatueGame = function initStatueGame() {
     recognition.maxAlternatives = 3;
 
     recognition.onresult = (event) => {
+      if (!micActive) {
+        return;
+      }
       for (let i = event.resultIndex; i < event.results.length; i += 1) {
+        const currentResult = event.results[i];
         const altCount = Math.min(event.results[i].length, 3);
         for (let a = 0; a < altCount; a += 1) {
           const candidate = event.results[i][a];
-          if (processVoiceTranscript(candidate.transcript)) {
+          const normalized = normalizeSpeech(candidate.transcript);
+          // In interim mode, only trigger on explicit command words.
+          if (!currentResult.isFinal && !(normalized.includes("estatua") || normalized.includes("continua") || normalized.includes("retoma"))) {
+            continue;
+          }
+          if (processVoiceTranscript(candidate.transcript, "continuous")) {
             return;
           }
         }
@@ -537,6 +556,11 @@ window.initStatueGame = function initStatueGame() {
         return;
       }
 
+      if (isMobileDevice) {
+        setPhase("idle", "Modo movel", "No telemovel use 'Premir para falar' para melhor fiabilidade.");
+        return;
+      }
+
       micActive = !micActive;
       micBtn.classList.toggle("active", micActive);
       micLabel.textContent = micActive ? "Microfone ligado" : "Ativar microfone";
@@ -546,6 +570,7 @@ window.initStatueGame = function initStatueGame() {
           if (player && player.setVolume) {
             player.setVolume(35);
           }
+          lastCommandKey = "";
           recognition.start();
         } catch {
           // Ignore duplicate start attempts.
@@ -574,7 +599,7 @@ window.initStatueGame = function initStatueGame() {
       let handled = false;
       const altCount = Math.min(event.results[0].length, 5);
       for (let a = 0; a < altCount; a += 1) {
-        handled = processVoiceTranscript(event.results[0][a].transcript) || handled;
+        handled = processVoiceTranscript(event.results[0][a].transcript, "ptt") || handled;
         if (handled) {
           break;
         }
@@ -587,6 +612,7 @@ window.initStatueGame = function initStatueGame() {
     pttBtn.onpointerdown = () => {
       try {
         pttBtn.classList.add("active");
+        pttLabel.textContent = "A ouvir...";
         pttRecognition.start();
       } catch {
         // Ignore overlapping starts.
@@ -595,6 +621,7 @@ window.initStatueGame = function initStatueGame() {
 
     pttBtn.onpointerup = () => {
       pttBtn.classList.remove("active");
+      pttLabel.textContent = "Premir para falar";
       try {
         pttRecognition.stop();
       } catch {
@@ -604,12 +631,18 @@ window.initStatueGame = function initStatueGame() {
 
     pttBtn.onpointercancel = () => {
       pttBtn.classList.remove("active");
+      pttLabel.textContent = "Premir para falar";
       try {
         pttRecognition.stop();
       } catch {
         // Ignore stop errors.
       }
     };
+
+    if (isMobileDevice) {
+      micBtn.disabled = true;
+      micLabel.textContent = "Use Premir para falar";
+    }
   }
 
   startBtn.onclick = () => {
