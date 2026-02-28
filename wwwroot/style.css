@@ -723,6 +723,58 @@ button:hover {
   background: #d8e6fb;
 }
 
+.supermario-layout {
+  margin-top: 10px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 260px;
+  gap: 12px;
+  align-items: start;
+}
+
+.supermario-stage {
+  border: 2px solid var(--border);
+  border-radius: 18px;
+  background: linear-gradient(160deg, #f8fdff 0%, #eef7ff 100%);
+  padding: 10px;
+  box-shadow: inset 0 1px 0 #ffffff;
+}
+
+#mario-canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+  border: 2px solid var(--border);
+  background: #8ed7ff;
+}
+
+.supermario-touch {
+  border: 2px solid var(--border);
+  border-radius: 18px;
+  background: linear-gradient(160deg, #ffffff 0%, #f1f8ff 100%);
+  padding: 10px;
+}
+
+.supermario-touch h2 {
+  margin: 0 0 8px;
+  color: var(--accent);
+  font-size: 1rem;
+}
+
+.supermario-touch-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+}
+
+.supermario-touch-grid button {
+  min-height: 52px;
+  justify-content: center;
+  touch-action: manipulation;
+  border-radius: 14px;
+  font-size: 1rem;
+}
+
 .photo-frame-stage {
   position: relative;
   width: min(100%, 560px);
@@ -999,6 +1051,14 @@ button:hover {
     max-width: 680px;
   }
 
+  .supermario-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .supermario-touch-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
   .photo-layout {
     grid-template-columns: 1fr;
   }
@@ -1031,6 +1091,32 @@ button:hover {
 }
 
 @media (max-width: 520px) {
+  .supermario-touch {
+    position: sticky;
+    bottom: 8px;
+    z-index: 30;
+    box-shadow: 0 8px 22px rgba(19, 45, 95, 0.2);
+  }
+
+  .supermario-touch-grid {
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+  }
+
+  .supermario-touch-grid button {
+    min-height: 56px;
+    font-size: 0.95rem;
+    padding: 10px 8px;
+  }
+
+  #mario-jump {
+    background: #178a40;
+  }
+
+  #mario-jump:hover {
+    background: #127136;
+  }
+
   .photo-capture-mobile {
     display: inline-flex;
     position: fixed;

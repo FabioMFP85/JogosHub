@@ -1,0 +1,53 @@
+@page "/super-mario"
+@inject IJSRuntime JS
+@implements IAsyncDisposable
+
+<h1>Super Mario JS</h1>
+<p>Usa as setas (ou botoes no ecra) para correr, saltar e chegar a bandeira.</p>
+
+<section class="panel">
+    <div class="stats">
+        <span>Pontos: <strong id="mario-score">0</strong></span>
+        <span>Moedas: <strong id="mario-coins">0</strong></span>
+        <span>Vidas: <strong id="mario-lives">3</strong></span>
+        <span>Estado: <strong id="mario-status">Pronto</strong></span>
+    </div>
+    <button id="mario-start" type="button">Comecar</button>
+    <button id="mario-reset" type="button" class="ghost-button">Reiniciar</button>
+</section>
+
+<section class="supermario-layout">
+    <section class="supermario-stage">
+        <canvas id="mario-canvas" width="960" height="420" aria-label="Jogo Super Mario"></canvas>
+    </section>
+
+    <section class="supermario-touch">
+        <h2>Controlos</h2>
+        <div class="supermario-touch-grid">
+            <button id="mario-left" type="button" aria-label="Mover para a esquerda">Esquerda</button>
+            <button id="mario-jump" type="button" aria-label="Saltar">Saltar</button>
+            <button id="mario-right" type="button" aria-label="Mover para a direita">Direita</button>
+        </div>
+    </section>
+</section>
+
+@code {
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JS.InvokeVoidAsync("initSuperMarioGame");
+        }
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        try
+        {
+            await JS.InvokeVoidAsync("stopSuperMarioGame");
+        }
+        catch (JSDisconnectedException)
+        {
+        }
+    }
+}
