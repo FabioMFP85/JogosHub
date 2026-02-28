@@ -1,0 +1,78 @@
+@page "/moldura-foto"
+@inject IJSRuntime JS
+@implements IAsyncDisposable
+
+<h1>Moldura de Foto</h1>
+<p>Permite a camera e posiciona a imagem dentro da moldura.</p>
+
+<section class="panel">
+    <div class="stats">
+        <span>Estado: <strong id="photo-status">A iniciar camera...</strong></span>
+    </div>
+    <button id="photo-start" type="button">Ligar camera</button>
+    <button id="photo-switch" type="button" class="ghost-button">Trocar camera</button>
+    <button id="photo-capture" type="button">Disparar foto</button>
+    <button id="photo-stop" type="button" class="ghost-button">Parar camera</button>
+</section>
+
+<section class="photo-layout">
+    <aside class="photo-frame-list" aria-label="Lista de molduras">
+        <h2>Molduras</h2>
+        <button class="photo-frame-option selected" type="button" data-frame-src="images/molduras/gabby.png" data-frame-name="Gabby">
+            <img src="images/molduras/gabby.png" alt="Moldura Gabby" />
+            <span>Gabby</span>
+        </button>
+        <button class="photo-frame-option" type="button" data-frame-src="images/molduras/mcqueen.png" data-frame-name="McQueen">
+            <img src="images/molduras/mcqueen.png" alt="Moldura McQueen" />
+            <span>McQueen</span>
+        </button>
+        <button class="photo-frame-option" type="button" data-frame-src="images/molduras/frozen.png" data-frame-name="Frozen">
+            <img src="images/molduras/frozen.png" alt="Moldura Frozen" />
+            <span>Frozen</span>
+        </button>
+        <button class="photo-frame-option" type="button" data-frame-src="images/molduras/moana.png" data-frame-name="Moana">
+            <img src="images/molduras/moana.png" alt="Moldura Moana" />
+            <span>Moana</span>
+        </button>
+    </aside>
+
+    <section class="photo-frame-stage" aria-label="Visualizacao da camera com moldura">
+        <div class="photo-frame-window">
+            <video id="photo-frame-video" autoplay playsinline muted></video>
+        </div>
+        <img id="photo-frame-overlay" class="photo-frame-overlay" src="images/molduras/gabby.png" alt="Moldura selecionada" />
+    </section>
+</section>
+
+<canvas id="photo-canvas" class="photo-canvas" aria-hidden="true"></canvas>
+
+<section class="photo-result" aria-label="Foto capturada">
+    <h2>Ultima foto</h2>
+    <img id="photo-result-image" alt="Foto capturada na moldura" />
+    <a id="photo-download" class="photo-download" href="#" download="moldura-foto.png">Descarregar foto</a>
+</section>
+
+<button id="photo-capture-mobile" class="photo-capture-mobile" type="button" aria-label="Tirar foto">
+    Tirar foto
+</button>
+
+@code {
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JS.InvokeVoidAsync("initPhotoFrame");
+        }
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        try
+        {
+            await JS.InvokeVoidAsync("stopPhotoFrame");
+        }
+        catch (JSDisconnectedException)
+        {
+        }
+    }
+}
